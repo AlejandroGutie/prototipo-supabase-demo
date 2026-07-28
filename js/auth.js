@@ -85,6 +85,9 @@ async function cerrarSesion() {
     }
 }
 
+// Hacer visible la función globalmente
+window.cerrarSesion = cerrarSesion;
+
 // Manejo de eventos del formulario y pestañas
 function inicializarInterfazAuth() {
     const tabLogin = document.getElementById('tab-login');
@@ -131,9 +134,12 @@ async function inyectarBotonCerrarSesion() {
         const userDiv = document.createElement('div');
         userDiv.className = 'user-badge';
         userDiv.innerHTML = `
-            👤 ${session.user.email}
-            Salir
+            <span>👤 ${session.user.email}</span>
+            <button type="button" class="btn-danger" id="btn-logout">Salir</button>
         `;
         header.appendChild(userDiv);
+
+        // Asignar listener explícito al botón inyectado
+        document.getElementById('btn-logout').addEventListener('click', cerrarSesion);
     }
 }

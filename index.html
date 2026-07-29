@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prototipo - Gestión de Clientes</title>
+    <title>Prototipo - Gestión de Beneficiarios</title>
     <link rel="stylesheet" href="css/styles.css">
     <!-- Carga del SDK de Supabase desde CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -20,9 +20,9 @@
 </head>
 <body>
     <header>
-        <h1>Prototipo Web Supabase</h1>
+        <h1>Beneficiarios Consciencia VIBA</h1>
         <nav>
-            <a href="index.html" class="active">Clientes</a>
+            <a href="index.html" class="active">Personas</a>
             <a href="proyectos.html">Proyectos</a>
         </nav>
     </header>
@@ -30,7 +30,7 @@
     <main class="container">
         <!-- SECCIÓN FORMULARIO -->
         <section class="card">
-            <h2 id="form-title">Registrar Nuevo Cliente</h2>
+            <h2 id="form-title">Registrar Nuevo Beneficiario</h2>
             <form id="cliente-form">
                 <input type="hidden" id="cliente-id">
                 
@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="empresa">Empresa</label>
+                    <label for="empresa">Programa</label>
                     <input type="text" id="empresa" placeholder="Nombre de la empresa">
                 </div>
 
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="btn-group">
-                    <button type="submit" class="btn-primary" id="btn-guardar">Guardar Cliente</button>
+                    <button type="submit" class="btn-primary" id="btn-guardar">Guardar</button>
                     <button type="button" class="btn-secondary" id="btn-cancelar" style="display:none;">Cancelar</button>
                 </div>
             </form>
@@ -72,7 +72,7 @@
 
         <!-- SECCIÓN TABLA Y BÚSQUEDA -->
         <section class="card">
-            <h2>Directorio de Clientes</h2>
+            <h2>Directorio de Beneficiarios</h2>
             <div class="form-group">
                 <input type="text" id="search-input" placeholder="🔍 Buscar cliente por nombre o email...">
             </div>
@@ -82,13 +82,13 @@
                         <tr>
                             <th>Nombre</th>
                             <th>Email</th>
-                            <th>Empresa</th>
+                            <th>Programa</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="clientes-tbody">
-                        <tr><td colspan="5">Cargando datos desde Supabase...</td></tr>
+                        <tr><td colspan="5">Cargando datos...</td></tr>
                     </tbody>
                 </table>
             </div>

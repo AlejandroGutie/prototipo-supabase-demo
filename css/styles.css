@@ -2,9 +2,9 @@
    ESTILOS GENERALES
    ======================================================= */
    :root {
-    --primary: #2b6cb0;
+    --primary: #6E7B5C;
     --primary-hover: #2c5282;
-    --success: #38a169;
+    --success: #AD7550;
     --danger: #e53e3e;
     --warning: #d69e2e;
     --bg-main: #f7fafc;
@@ -28,7 +28,7 @@ body {
 }
 
 header {
-    background-color: #1a365d;
+    background-color: #4F5A42;
     color: white;
     padding: 15px 25px;
     border-radius: 8px;
@@ -169,8 +169,8 @@ th {
 }
 
 .auth-tab.active {
-    color: #3182ce;
-    border-bottom: 3px solid #3182ce;
+    color: #3B342C;
+    border-bottom: 3px solid #3B342C;
 }
 
 .user-badge {

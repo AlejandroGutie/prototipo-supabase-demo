@@ -122,6 +122,17 @@ function inicializarInterfazAuth() {
         const pass = document.getElementById('reg-password').value;
         registrarUsuario(email, pass);
     });
+
+    if (window.VIBA_MODO_LOCAL) {
+        const hint = document.createElement('p');
+        hint.id = 'modo-local-hint';
+        hint.style.marginTop = '12px';
+        hint.style.fontSize = '0.85rem';
+        hint.style.textAlign = 'center';
+        hint.style.color = '#4a5568';
+        hint.textContent = 'Modo local: entra con demo@consciencia.local y la contraseña demo1234. Los datos se guardan solo en este navegador.';
+        document.querySelector('.auth-container').appendChild(hint);
+    }
 }
 
 // Inyección dinámica de datos del usuario y botón de salida en el header

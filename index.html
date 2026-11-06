@@ -3,66 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prototipo - Gestión de Beneficiarios</title>
+    <title>Personas · Consciencia VIBA</title>
     <link rel="stylesheet" href="css/styles.css">
-    <!-- Carga del SDK de Supabase desde CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabaseClient.js"></script>
-    <!-- Bloqueo inmediato antes de renderizar el HTML -->
+    <script src="js/supabaseClient.js?v=20261106paso7"></script>
     <script>
         (async () => {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                window.location.replace('login.html');
-            }
+            if (!session) window.location.replace('login.html');
         })();
     </script>
 </head>
-<body>
-    <header>
-        <h1>Beneficiarios Consciencia VIBA</h1>
-        <nav>
-            <a href="index.html" class="active">Personas</a>
-            <a href="proyectos.html">Proyectos</a>
-        </nav>
-    </header>
+<body data-pagina="personas">
+    <header id="app-header"></header>
 
-    <main class="container">
-        <!-- SECCIÓN FORMULARIO -->
+    <main class="container una-columna">
         <section class="card">
-            <h2 id="form-title">Registrar Nuevo Beneficiario</h2>
-            <form id="cliente-form">
-                <input type="hidden" id="cliente-id">
-                
-                <div class="form-group">
-                    <label for="nombre">Nombre Completo *</label>
-                    <input type="text" id="nombre" required placeholder="Ej: Maria Perez">
+            <h2 id="form-title">Registrar persona</h2>
+            <p class="lead">La persona se reconoce por tipo y número de documento. La edad se calcula con la fecha de nacimiento y no se digita.</p>
+            <form id="persona-form">
+                <input type="hidden" id="persona-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="tipo_documento">Tipo de documento *</label>
+                        <select id="tipo_documento" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="numero_documento">Número de documento *</label>
+                        <input type="text" id="numero_documento" inputmode="numeric" required placeholder="Sin puntos ni espacios">
+                    </div>
+                    <div class="form-group full">
+                        <label for="nombre_apellidos">Apellidos y nombres *</label>
+                        <input type="text" id="nombre_apellidos" required placeholder="Apellidos y nombres">
+                    </div>
+                    <div class="form-group">
+                        <label for="sexo">Sexo</label>
+                        <select id="sexo"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                        <input type="date" id="fecha_nacimiento">
+                    </div>
+                    <div class="form-group">
+                        <label for="municipio_residencia">Municipio de residencia</label>
+                        <input type="text" id="municipio_residencia" placeholder="Medellín">
+                    </div>
+                    <div class="form-group">
+                        <label for="ocupacion">Ocupación</label>
+                        <input type="text" id="ocupacion">
+                    </div>
+                    <div class="form-group full">
+                        <label for="direccion_residencia">Dirección de residencia</label>
+                        <input type="text" id="direccion_residencia">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo</label>
+                        <input type="email" id="email" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Teléfono con indicativo</label>
+                        <input type="text" id="telefono" inputmode="numeric" placeholder="573001112233">
+                    </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="email">Correo Electrónico *</label>
-                    <input type="email" id="email" required placeholder="ejemplo@correo.com">
-                </div>
-                
-                <div class="form-group">
-                    <label for="telefono">Teléfono</label>
-                    <input type="text" id="telefono" placeholder="+57 300 000 0000">
-                </div>
-
-                <div class="form-group">
-                    <label for="empresa">Programa</label>
-                    <input type="text" id="empresa" placeholder="Nombre de la empresa">
-                </div>
-
-                <div class="form-group">
-                    <label for="estado">Estado</label>
-                    <select id="estado">
-                        <option value="Activo">Activo</option>
-                        <option value="Inactivo">Inactivo</option>
-                        <option value="Prospecto">Prospecto</option>
-                    </select>
-                </div>
-
                 <div class="btn-group">
                     <button type="submit" class="btn-primary" id="btn-guardar">Guardar</button>
                     <button type="button" class="btn-secondary" id="btn-cancelar" style="display:none;">Cancelar</button>
@@ -70,37 +72,37 @@
             </form>
         </section>
 
-        <!-- SECCIÓN TABLA Y BÚSQUEDA -->
         <section class="card">
-            <h2>Directorio de Beneficiarios</h2>
+            <h2>Directorio</h2>
             <div class="form-group">
-                <input type="text" id="search-input" placeholder="🔍 Buscar cliente por nombre o email...">
+                <input type="text" id="search-input" placeholder="Buscar por nombre, documento, correo o municipio">
             </div>
             <div style="overflow-x: auto;">
                 <table>
                     <thead>
                         <tr>
                             <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Programa</th>
-                            <th>Estado</th>
+                            <th>Documento</th>
+                            <th>Sexo</th>
+                            <th>Edad</th>
+                            <th>Municipio</th>
+                            <th>Talleres</th>
+                            <th>Acompañamientos</th>
+                            <th>Valoraciones</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="clientes-tbody">
-                        <tr><td colspan="5">Cargando datos...</td></tr>
+                    <tbody id="personas-tbody">
+                        <tr><td colspan="9">Cargando…</td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
     </main>
 
-    <!-- Librería externa de Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- Scripts locales del proyecto -->
-    <script src="js/supabaseClient.js"></script>
+    <script src="js/catalogos.js?v=20261106paso7"></script>
+    <script src="js/nav.js"></script>
     <script src="js/auth.js"></script>
-    <script src="js/clientes.js"></script>
+    <script src="js/personas.js?v=20261106paso7"></script>
 </body>
 </html>

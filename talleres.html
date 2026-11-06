@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talleres · Consciencia VIBA</title>
+    <link rel="stylesheet" href="css/styles.css?v=20261106paso7">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js?v=20261106paso7"></script>
+    <script>
+        (async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) window.location.replace('login.html');
+        })();
+    </script>
+</head>
+<body data-pagina="talleres">
+    <header id="app-header"></header>
+    <main class="container una-columna">
+        <section class="card">
+            <h2 id="titulo-profesional">Registrar profesional</h2>
+            <p class="lead">Quien acompaña. El teléfono lleva indicativo, sin el signo +.</p>
+            <form id="prof-form">
+                <input type="hidden" id="prof-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="prof-nombre">Nombre *</label>
+                        <input type="text" id="prof-nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prof-activo">Activo *</label>
+                        <select id="prof-activo"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="prof-email">Correo</label>
+                        <input type="email" id="prof-email" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="prof-telefono">Teléfono con indicativo</label>
+                        <input type="text" id="prof-telefono" inputmode="numeric" placeholder="573001112233">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn-primary" id="btn-guardar-prof">Guardar</button>
+                    <button type="button" class="btn-secondary oculto" id="btn-cancelar-prof">Cancelar</button>
+                </div>
+                <p id="aviso-prof" class="aviso" role="status"></p>
+            </form>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Contacto</th>
+                            <th>Activo</th>
+                            <th>Talleres</th>
+                            <th>Acompañamientos</th>
+                            <th>Valoraciones</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="prof-body">
+                        <tr><td colspan="7">Cargando…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card oculto" id="panel-agenda">
+            <h2 id="titulo-agenda">Agenda</h2>
+            <p class="lead">Un horario no puede cruzarse con otro del mismo día, aunque la modalidad sea distinta.</p>
+            <form id="disp-form">
+                <input type="hidden" id="disp-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="disp-fecha">Fecha *</label>
+                        <input type="date" id="disp-fecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="disp-modalidad">Modalidad *</label>
+                        <select id="disp-modalidad"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="disp-inicio">Hora de inicio *</label>
+                        <input type="time" id="disp-inicio" step="60" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="disp-fin">Hora de fin *</label>
+                        <input type="time" id="disp-fin" step="60" required>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn-primary" id="btn-guardar-disp">Guardar horario</button>
+                    <button type="button" class="btn-secondary oculto" id="btn-cancelar-disp">Cancelar</button>
+                </div>
+                <p id="aviso-agenda" class="aviso" role="status"></p>
+            </form>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                            <th>Modalidad</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="disp-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 id="titulo-taller">Registrar taller</h2>
+            <p class="lead">Tiene programa, fecha y, si se indica, un cupo. El responsable es un profesional activo.</p>
+            <form id="taller-form">
+                <input type="hidden" id="taller-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="taller-nombre">Nombre *</label>
+                        <input type="text" id="taller-nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taller-programa">Programa *</label>
+                        <select id="taller-programa"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taller-fecha">Fecha programada *</label>
+                        <input type="date" id="taller-fecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taller-lugar">Lugar</label>
+                        <input type="text" id="taller-lugar">
+                    </div>
+                    <div class="form-group">
+                        <label for="taller-cupo">Cupo</label>
+                        <input type="number" id="taller-cupo" min="1" step="1" placeholder="Sin límite si se deja vacío">
+                    </div>
+                    <div class="form-group">
+                        <label for="taller-profesional">Profesional responsable</label>
+                        <select id="taller-profesional"></select>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn-primary" id="btn-guardar-taller">Guardar</button>
+                    <button type="button" class="btn-secondary oculto" id="btn-cancelar-taller">Cancelar</button>
+                </div>
+                <p id="aviso-taller" class="aviso" role="status"></p>
+            </form>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Taller</th>
+                            <th>Programa</th>
+                            <th>Cupo</th>
+                            <th>Responsable</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="taller-body">
+                        <tr><td colspan="6">Cargando…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card oculto" id="panel-inscripcion">
+            <h2 id="titulo-inscripcion">Inscripciones</h2>
+            <p class="lead" id="texto-cupo"></p>
+            <form id="insc-form">
+                <input type="hidden" id="insc-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="insc-persona">Persona *</label>
+                        <select id="insc-persona"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="insc-fecha">Fecha de inscripción *</label>
+                        <input type="date" id="insc-fecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="insc-estado">Estado *</label>
+                        <select id="insc-estado"></select>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn-primary" id="btn-guardar-insc">Guardar inscripción</button>
+                    <button type="button" class="btn-secondary oculto" id="btn-cancelar-insc">Cancelar</button>
+                </div>
+                <p id="aviso-insc" class="aviso" role="status"></p>
+            </form>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Persona</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="insc-body"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script src="js/catalogos.js?v=20261106paso7"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/talleres.js?v=20261106paso7"></script>
+</body>
+</html>

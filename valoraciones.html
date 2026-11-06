@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valoraciones · Consciencia VIBA</title>
+    <link rel="stylesheet" href="css/styles.css?v=20261106supabase">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js?v=20261106formsql"></script>
+    <script>
+        (async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) window.location.replace('login.html');
+        })();
+    </script>
+</head>
+<body data-pagina="valoraciones">
+    <header id="app-header"></header>
+    <main class="container una-columna">
+        <section class="card">
+            <h2 id="titulo-valoracion">Registrar valoración</h2>
+            <p class="lead">El profesional valora a la persona antes, en el seguimiento o al cierre. El estado emocional y el físico se anotan por separado.</p>
+            <form id="val-form">
+                <input type="hidden" id="val-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="val-persona">Persona *</label>
+                        <select id="val-persona" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="val-profesional">Profesional *</label>
+                        <select id="val-profesional" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="val-fecha">Fecha *</label>
+                        <input type="date" id="val-fecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="val-tipo">Tipo *</label>
+                        <select id="val-tipo" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="val-programa">Programa</label>
+                        <select id="val-programa"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="val-modalidad">Modalidad</label>
+                        <select id="val-modalidad"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="val-taller">Taller, si aplica</label>
+                        <select id="val-taller"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="val-formulario">Diligenciamiento, si aplica</label>
+                        <select id="val-formulario"></select>
+                    </div>
+                    <div class="form-group full">
+                        <label for="val-motivo">Motivo</label>
+                        <textarea id="val-motivo" rows="2"></textarea>
+                    </div>
+                    <div class="form-group full">
+                        <label for="val-objetivo">Objetivo</label>
+                        <textarea id="val-objetivo" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="val-emocional">Estado emocional</label>
+                        <textarea id="val-emocional" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="val-fisico">Estado físico</label>
+                        <textarea id="val-fisico" rows="3"></textarea>
+                    </div>
+                </div>
+                <p class="lead">Escalas de 0 a 10. Bienestar se registra aparte de ánimo, ansiedad, sueño y dolor.</p>
+                <div class="escalas">
+                    <div class="form-group">
+                        <label for="val-animo">Ánimo</label>
+                        <input type="number" id="val-animo" min="0" max="10" step="1" inputmode="numeric">
+                    </div>
+                    <div class="form-group">
+                        <label for="val-ansiedad">Ansiedad</label>
+                        <input type="number" id="val-ansiedad" min="0" max="10" step="1" inputmode="numeric">
+                    </div>
+                    <div class="form-group">
+                        <label for="val-sueno">Sueño</label>
+                        <input type="number" id="val-sueno" min="0" max="10" step="1" inputmode="numeric">
+                    </div>
+                    <div class="form-group">
+                        <label for="val-dolor">Dolor (EVA)</label>
+                        <input type="number" id="val-dolor" min="0" max="10" step="1" inputmode="numeric">
+                    </div>
+                    <div class="form-group">
+                        <label for="val-bienestar">Bienestar</label>
+                        <input type="number" id="val-bienestar" min="0" max="10" step="1" inputmode="numeric">
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label for="val-riesgos">Riesgos</label>
+                        <textarea id="val-riesgos" rows="2"></textarea>
+                    </div>
+                    <div class="form-group full">
+                        <label for="val-recomendaciones">Recomendaciones</label>
+                        <textarea id="val-recomendaciones" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="val-concepto">Concepto</label>
+                        <select id="val-concepto"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="val-seguimiento">Requiere seguimiento</label>
+                        <select id="val-seguimiento"></select>
+                    </div>
+                    <div class="form-group oculto" id="fila-proxima">
+                        <label for="val-proxima">Próxima fecha *</label>
+                        <input type="date" id="val-proxima">
+                    </div>
+                    <div class="form-group full">
+                        <label for="val-notas">Notas</label>
+                        <textarea id="val-notas" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn-primary" id="btn-guardar">Guardar valoración</button>
+                    <button type="button" class="btn-secondary oculto" id="btn-cancelar">Cancelar</button>
+                </div>
+                <p id="aviso-val" class="aviso" role="status"></p>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Valoraciones registradas</h2>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Persona</th>
+                            <th>Profesional</th>
+                            <th>Programa</th>
+                            <th>Concepto</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="val-body">
+                        <tr><td colspan="7">Cargando…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script src="js/catalogos.js?v=20261106supabase"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/valoraciones.js?v=20261106formsql"></script>
+</body>
+</html>

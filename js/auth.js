@@ -28,33 +28,7 @@ async function verificarSesion(isLoginPage) {
     }
 }
 
-// Registro de usuario (SignUp)
-async function registrarUsuario(email, password) {
-    const msgDiv = document.getElementById('auth-message');
-    msgDiv.innerText = 'Procesando registro...';
-    msgDiv.style.color = '#2b6cb0';
-
-    const { data, error } = await supabaseClient.auth.signUp({
-        email: email,
-        password: password
-    });
-
-    if (error) {
-        msgDiv.innerText = 'Error: ' + error.message;
-        msgDiv.style.color = '#e53e3e';
-    } else {
-        if (data.session) {
-            msgDiv.innerText = '¡Registro e inicio de sesión exitoso! Redirigiendo...';
-            msgDiv.style.color = '#38a169';
-            setTimeout(() => window.location.href = 'index.html', 1200);
-        } else {
-            msgDiv.innerText = 'Registro exitoso. Por favor revisa tu correo electrónico para confirmar la cuenta.';
-            msgDiv.style.color = '#38a169';
-        }
-    }
-}
-
-// Inicio de sesión (SignIn)
+// Inicio de sesión
 async function iniciarSesion(email, password) {
     const msgDiv = document.getElementById('auth-message');
     msgDiv.innerText = 'Verificando credenciales...';
@@ -75,7 +49,7 @@ async function iniciarSesion(email, password) {
     }
 }
 
-// Cierre de sesión (SignOut)
+// Cierre de sesión
 async function cerrarSesion() {
     const { error } = await supabaseClient.auth.signOut();
     if (error) {
@@ -90,24 +64,7 @@ window.cerrarSesion = cerrarSesion;
 
 // Manejo de eventos del formulario y pestañas
 function inicializarInterfazAuth() {
-    const tabLogin = document.getElementById('tab-login');
-    const tabRegister = document.getElementById('tab-register');
     const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-
-    tabLogin.addEventListener('click', () => {
-        tabLogin.classList.add('active');
-        tabRegister.classList.remove('active');
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
-    });
-
-    tabRegister.addEventListener('click', () => {
-        tabRegister.classList.add('active');
-        tabLogin.classList.remove('active');
-        registerForm.style.display = 'block';
-        loginForm.style.display = 'none';
-    });
 
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -116,23 +73,18 @@ function inicializarInterfazAuth() {
         iniciarSesion(email, pass);
     });
 
-    registerForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('reg-email').value;
-        const pass = document.getElementById('reg-password').value;
-        registrarUsuario(email, pass);
-    });
-
+    const hint = document.createElement('p');
+    hint.id = 'modo-local-hint';
+    hint.style.marginTop = '12px';
+    hint.style.fontSize = '0.85rem';
+    hint.style.textAlign = 'center';
+    hint.style.color = '#4a5568';
     if (window.VIBA_MODO_LOCAL) {
-        const hint = document.createElement('p');
-        hint.id = 'modo-local-hint';
-        hint.style.marginTop = '12px';
-        hint.style.fontSize = '0.85rem';
-        hint.style.textAlign = 'center';
-        hint.style.color = '#4a5568';
         hint.textContent = 'Modo local: entra con demo@consciencia.local y la contraseña demo1234. Los datos se guardan solo en este navegador.';
-        document.querySelector('.auth-container').appendChild(hint);
+    } else {
+        hint.textContent = 'Conectado a Supabase. Use el correo y la contraseña del usuario creado en Authentication.';
     }
+    document.querySelector('.auth-container').appendChild(hint);
 }
 
 // Inyección dinámica de datos del usuario y botón de salida en el header

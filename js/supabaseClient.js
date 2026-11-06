@@ -1,18 +1,44 @@
 // =======================================================
-// CONFIGURACIÓN DE SUPABASE CLIENT
-// MODO_LOCAL = true guarda sesión y datos en este navegador.
-// Cámbialo a false cuando vuelvas a tener acceso a Supabase.
+// Cliente de datos de Go-Consciencia.
+// MODO_LOCAL = true → sesión y tablas en este navegador.
+// MODO_LOCAL = false → Auth y tablas reales de Supabase.
+// No apagar el modo local hasta aplicar Datos_y_modelo/rls_politicas.sql
+// y crear el usuario de prueba en Authentication → Users.
 // =======================================================
 (function () {
     if (window.supabaseClient) return;
 
-    const MODO_LOCAL = true;
+    /* false = Auth y tablas en Supabase. true = solo este navegador. */
+    const MODO_LOCAL = false;
     window.VIBA_MODO_LOCAL = MODO_LOCAL;
 
+    /* Nombres que usa la app → nombres reales de sql.sql. */
+    const TABLAS_SQL = {
+        personas: 'persona',
+        formularios: 'formulario',
+        formulario_categorias: 'formulario_categoria_emocional',
+        formulario_servicios_feneser: 'formulario_servicio_feneser',
+        formulario_sustancias: 'formulario_sustancia',
+        profesionales: 'profesional',
+        disponibilidades: 'disponibilidad_profesional',
+        talleres: 'taller',
+        inscripciones: 'inscripcion',
+        valoraciones: 'valoracion'
+    };
+
+    function tablaSql(nombreApp) {
+        return TABLAS_SQL[nombreApp] || nombreApp;
+    }
+
     if (!MODO_LOCAL) {
-        const SUPABASE_URL = 'https://blarjnvouvqovlfocmbr.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_e34jI9zd6gNSJb1wC25hnw_Gj5tR_NX';
-        window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_URL = 'https://gofggyynbqfalsduqwhg.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_oSxa10N5qEmqVqHkvnXk6A_5PM6wa5X';
+        const cliente = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const fromOriginal = cliente.from.bind(cliente);
+        cliente.from = function (nombreApp) {
+            return fromOriginal(tablaSql(nombreApp));
+        };
+        window.supabaseClient = cliente;
         return;
     }
 
@@ -20,7 +46,17 @@
         usuarios: 'viba-local:usuarios',
         sesion: 'viba-local:sesion',
         clientes: 'viba-local:clientes',
-        proyectos: 'viba-local:proyectos'
+        proyectos: 'viba-local:proyectos',
+        personas: 'viba-local:personas',
+        formularios: 'viba-local:formularios',
+        formulario_categorias: 'viba-local:formulario_categorias',
+        formulario_servicios_feneser: 'viba-local:formulario_servicios_feneser',
+        formulario_sustancias: 'viba-local:formulario_sustancias',
+        profesionales: 'viba-local:profesionales',
+        disponibilidades: 'viba-local:disponibilidades',
+        talleres: 'viba-local:talleres',
+        inscripciones: 'viba-local:inscripciones',
+        valoraciones: 'viba-local:valoraciones'
     };
 
     function leer(clave, defecto) {
@@ -78,6 +114,53 @@
                 }
             ]);
         }
+
+        if (!localStorage.getItem(CLAVES.personas)) {
+            guardar(CLAVES.personas, [
+                {
+                    id: 1,
+                    tipo_documento: 'CC',
+                    numero_documento: 1010101010,
+                    nombre_apellidos: 'Ana Ejemplo',
+                    sexo: 'MUJ',
+                    fecha_nacimiento: '1988-04-12',
+                    municipio_residencia: 'Medellín',
+                    direccion_residencia: '',
+                    ocupacion: 'Docente',
+                    email: 'ana.ejemplo@correo.com',
+                    telefono: 573001112233,
+                    created_at: '2026-09-01T12:00:00.000Z'
+                },
+                {
+                    id: 2,
+                    tipo_documento: 'CE',
+                    numero_documento: 2020202020,
+                    nombre_apellidos: 'Luis Ejemplo',
+                    sexo: 'HOM',
+                    fecha_nacimiento: '1995-11-03',
+                    municipio_residencia: 'Envigado',
+                    direccion_residencia: '',
+                    ocupacion: 'Diseñador',
+                    email: 'luis.ejemplo@correo.com',
+                    telefono: 573004445566,
+                    created_at: '2026-09-15T12:00:00.000Z'
+                }
+            ]);
+        }
+
+        if (!localStorage.getItem(CLAVES.formularios)) {
+            guardar(CLAVES.formularios, []);
+        }
+        if (!localStorage.getItem(CLAVES.formulario_categorias)) guardar(CLAVES.formulario_categorias, []);
+        if (!localStorage.getItem(CLAVES.formulario_servicios_feneser)) guardar(CLAVES.formulario_servicios_feneser, []);
+        if (!localStorage.getItem(CLAVES.formulario_sustancias)) guardar(CLAVES.formulario_sustancias, []);
+
+        /* Agenda, talleres e inscripciones empiezan vacíos. No se inventan registros. */
+        if (!localStorage.getItem(CLAVES.profesionales)) guardar(CLAVES.profesionales, []);
+        if (!localStorage.getItem(CLAVES.disponibilidades)) guardar(CLAVES.disponibilidades, []);
+        if (!localStorage.getItem(CLAVES.talleres)) guardar(CLAVES.talleres, []);
+        if (!localStorage.getItem(CLAVES.inscripciones)) guardar(CLAVES.inscripciones, []);
+        if (!localStorage.getItem(CLAVES.valoraciones)) guardar(CLAVES.valoraciones, []);
 
         if (!localStorage.getItem(CLAVES.proyectos)) {
             guardar(CLAVES.proyectos, [
@@ -155,15 +238,25 @@
         if (estado.operacion === 'insert') {
             const nuevas = [];
             (estado.datos || []).forEach((fila) => {
-                const nueva = {
-                    ...fila,
-                    id: siguienteId(filas),
-                    created_at: new Date().toISOString()
-                };
+                const nueva = { ...fila };
+                /* Las tablas de detalle del formulario usan clave compuesta, sin id propio. */
+                if (!Object.prototype.hasOwnProperty.call(nueva, 'id') &&
+                    tabla !== 'formulario_categorias' &&
+                    tabla !== 'formulario_servicios_feneser' &&
+                    tabla !== 'formulario_sustancias') {
+                    nueva.id = siguienteId(filas);
+                }
+                if (!Object.prototype.hasOwnProperty.call(nueva, 'created_at') &&
+                    (tabla === 'valoraciones' || tabla === 'formularios' || tabla === 'personas')) {
+                    nueva.created_at = new Date().toISOString();
+                }
                 filas.push(nueva);
                 nuevas.push({ ...nueva });
             });
             guardar(clave, filas);
+            if (estado.unico) {
+                return { data: nuevas[0] || null, error: null };
+            }
             return { data: nuevas, error: null };
         }
 
@@ -204,6 +297,10 @@
 
         const consulta = {
             select() {
+                /* Tras insert/update, select solo pide devolver las filas afectadas. */
+                if (estado.operacion === 'insert' || estado.operacion === 'update') {
+                    return consulta;
+                }
                 estado.operacion = 'select';
                 return consulta;
             },
@@ -268,31 +365,11 @@
                 guardar(CLAVES.sesion, sesion);
                 return { data: { session: sesion, user: sesion.user }, error: null };
             },
-            async signUp({ email, password }) {
-                asegurarDatos();
-                const usuarios = leer(CLAVES.usuarios, []);
-                const limpio = String(email || '').trim().toLowerCase();
-
-                if (!limpio) {
-                    return { data: { session: null, user: null }, error: { message: 'El correo es obligatorio' } };
-                }
-                if (usuarios.some((item) => item.email.toLowerCase() === limpio)) {
-                    return { data: { session: null, user: null }, error: { message: 'Este correo ya está registrado' } };
-                }
-                if (!password || String(password).length < 6) {
-                    return {
-                        data: { session: null, user: null },
-                        error: { message: 'La contraseña debe tener al menos 6 caracteres' }
-                    };
-                }
-
-                const usuario = { id: siguienteId(usuarios), email: limpio, password: String(password) };
-                usuarios.push(usuario);
-                guardar(CLAVES.usuarios, usuarios);
-
-                const sesion = { user: { id: usuario.id, email: usuario.email } };
-                guardar(CLAVES.sesion, sesion);
-                return { data: { session: sesion, user: sesion.user }, error: null };
+            async signUp() {
+                return {
+                    data: { session: null, user: null },
+                    error: { message: 'El registro de cuentas está deshabilitado' }
+                };
             },
             async signOut() {
                 localStorage.removeItem(CLAVES.sesion);

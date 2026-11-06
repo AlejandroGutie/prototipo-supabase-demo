@@ -1,0 +1,18 @@
+# Variables de entorno y secretos (nunca publicar)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Dependencias y caché (si se agregan luego)
+node_modules/
+.cache/
+dist/

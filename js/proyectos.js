@@ -1,4 +1,5 @@
-// Referencias
+/* Borrador del prototipo anterior. No forma parte del modelo de acompañamiento. */
+// Referencias del formulario de proyectos
 const projForm = document.getElementById('proyecto-form');
 const projIdInput = document.getElementById('proyecto-id');
 const tituloInput = document.getElementById('titulo');

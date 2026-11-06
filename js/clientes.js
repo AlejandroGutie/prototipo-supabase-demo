@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', (e) => cargarClientes(e.target.value));
 });
 
-// 1. LEER Y BUSCAR (Select / Search)
+// 1. Leer y buscar
 async function cargarClientes(filtro = '') {
     try {
         let query = supabaseClient.from('clientes').select('*').order('created_at', { ascending: false });
@@ -60,7 +60,7 @@ async function cargarClientes(filtro = '') {
     }
 }
 
-// 2. CREAR Y EDITAR (Insert / Update)
+// 2. Crear y editar
 async function guardarCliente(e) {
     e.preventDefault();
 
@@ -75,7 +75,7 @@ async function guardarCliente(e) {
 
     try {
         if (id) {
-            // EDITAR / ACTUALIZAR
+            // Actualizar un cliente existente
             const { error } = await supabaseClient
                 .from('clientes')
                 .update(datosCliente)
@@ -84,7 +84,7 @@ async function guardarCliente(e) {
             if (error) throw error;
             alert('Cliente actualizado con éxito');
         } else {
-            // GUARDAR / CREAR
+            // Crear un cliente nuevo
             const { error } = await supabaseClient
                 .from('clientes')
                 .insert([datosCliente]);
@@ -126,7 +126,7 @@ window.prepararEdicion = async function(id) {
     }
 };
 
-// 3. ELIMINAR (Delete)
+// 3. Eliminar
 window.eliminarCliente = async function(id) {
     if (!confirm('¿Está seguro de que desea eliminar este cliente?')) return;
 

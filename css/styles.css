@@ -2,15 +2,17 @@
    ESTILOS GENERALES
    ======================================================= */
    :root {
-    --primary: #6E7B5C;
-    --primary-hover: #2c5282;
+    --primary: #414224;
+    --primary-hover: #773C29;
     --success: #AD7550;
-    --danger: #e53e3e;
-    --warning: #d69e2e;
-    --bg-main: #f7fafc;
-    --card-bg: #ffffff;
-    --text-color: #2d3748;
-    --border-color: #e2e8f0;
+    --danger: #9b3a32;
+    --warning: #A8714A;
+    --bg-main: #F0EAE0;
+    --card-bg: #fffdf9;
+    --text-color: #2F2E2F;
+    --border-color: #e4d8c8;
+    --olive: #414224;
+    --sand: #D7B18E;
 }
 
 * {
@@ -28,26 +30,51 @@ body {
 }
 
 header {
-    background-color: #4F5A42;
-    color: white;
-    padding: 15px 25px;
+    background-color: var(--olive);
+    color: #F0EAE0;
+    padding: 16px 22px;
     border-radius: 8px;
-    margin-bottom: 25px;
+    margin-bottom: 22px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px 28px;
+    flex-wrap: wrap;
+}
+
+.brand {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.brand strong {
+    font-size: 1.15rem;
+    letter-spacing: 0.01em;
+}
+
+.brand span {
+    font-size: 0.78rem;
+    color: var(--sand);
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
 }
 
 nav a {
-    color: #edf2f7;
+    color: #F0EAE0;
     text-decoration: none;
-    margin-left: 15px;
     font-weight: 600;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
 }
 
 nav a.active, nav a:hover {
-    color: #63b3ed;
-    text-decoration: underline;
+    color: #fff;
+    border-bottom-color: var(--sand);
 }
 
 .container {
@@ -73,9 +100,44 @@ nav a.active, nav a:hover {
 }
 
 .card h2 {
-    margin-bottom: 15px;
-    color: #1a365d;
+    margin-bottom: 8px;
+    color: var(--olive);
     font-size: 1.25rem;
+}
+
+.lead {
+    color: #5c574a;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+}
+
+.container.una-columna {
+    grid-template-columns: 1fr;
+    max-width: 1080px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 16px;
+}
+
+.form-grid .full {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 700px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.modulo-pendiente {
+    max-width: 720px;
+}
+
+.modulo-pendiente p + p {
+    margin-top: 10px;
 }
 
 .form-group {
@@ -133,8 +195,8 @@ th, td {
 }
 
 th {
-    background-color: #edf2f7;
-    color: #2d3748;
+    background-color: #E7E1D4;
+    color: var(--olive);
     font-weight: 700;
 }
 
@@ -184,4 +246,109 @@ th {
 .user-badge button {
     padding: 5px 10px;
     font-size: 0.8rem;
+}
+
+.oculto { display: none; }
+
+/* Fila del taller o del profesional que está abierto en el panel de abajo. */
+tr.fila-activa td { background: var(--bg-main); }
+
+/* Cinco escalas de la valoración. Bienestar va aparte de ánimo, ansiedad, sueño y dolor. */
+.escalas {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px 12px;
+}
+
+@media (max-width: 800px) {
+    .escalas { grid-template-columns: 1fr 1fr; }
+}
+
+.progreso {
+    height: 8px;
+    background: #E7E1D4;
+    border-radius: 99px;
+    overflow: hidden;
+    margin: -6px 0 16px;
+}
+
+.progreso span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--sand);
+}
+
+.aviso {
+    min-height: 1.2em;
+    margin-top: 12px;
+    font-size: 0.92rem;
+}
+
+.aviso.error { color: var(--danger); }
+.aviso.ok { color: #3d5c32; }
+
+.lista-respuestas {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.lista-respuestas li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.lista-respuestas li div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.lista-respuestas li span {
+    color: #5c574a;
+    font-size: 0.9rem;
+}
+
+.lista-respuestas .vacio {
+    display: block;
+    color: #5c574a;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.opciones-multi, .sustancias {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.opciones-multi .opcion-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.opcion-check input { width: auto; }
+
+.sustancia-fila {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1fr 1.3fr;
+    gap: 8px;
+    align-items: center;
+}
+
+.sustancia-fila strong { font-size: 0.9rem; }
+
+@media (max-width: 800px) {
+    .sustancia-fila { grid-template-columns: 1fr; }
 }
